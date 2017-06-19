@@ -33,12 +33,21 @@ if __name__ == '__main__':
     embarked = Counter(p['Embarked'] for p in dataset)  # Count occurrences
     embarked, _ = embarked.most_common(1)[0]  # Select the most common
 
+    age_interval = 20  # round each 20
+    fare_interval = 200
+    parch_interval = 4
     for p in dataset:
         p['Age'] = round(float(p['Age'])) if p['Age'] else avg_age
         p['Fare'] = float(p['Fare']) if p['Fare'] else avg_fare
+        p['Embarked'] = p['Embarked'] or embarked
+        p['Parch'] = int(p['Parch'])
+        p['SibSp'] = int(p['SibSp'])
+        if class_attr in p:
+            p[class_attr] = int(p[class_attr])
 
-        if not p['Embarked']:
-            p['Embarked'] = embarked
-        del p['Cabin']  # del cabin because there aren't information enough
+        p['Age'] = round(p['Age']/age_interval) * age_interval
+        p['Fare'] = round(p['Fare']/fare_interval) * fare_interval
+        p['Parch'] = round(p['Parch']/parch_interval) * parch_interval
+        p['SibSp'] = round(p['SibSp']/parch_interval) * parch_interval
 
 
