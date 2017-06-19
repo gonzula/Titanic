@@ -14,11 +14,11 @@ if __name__ == '__main__':
         reader = csv.DictReader(f)
         test = list(reader)
 
-    attrs_to_ignore = set(['PassengerId', 'Name', 'Ticket', ])
-    class_attr = set(['Survived'])
+    attrs_to_ignore = {'PassengerId', 'Name', 'Ticket', 'Cabin'}
+    class_attr = 'Survived'
     attrs = set(train[0].keys())
-    significant_attrs = attrs - class_attr - attrs_to_ignore
-    pprint.pprint(train[:20])
+    significant_attrs = attrs - set([class_attr]) - attrs_to_ignore
+    # pprint.pprint(train[:20])
 
     dataset = train + test
 
