@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     age_interval = 20  # round each 20
     fare_interval = 200
-    parch_interval = 4
+    parch_interval = 8
     for p in dataset:
         p['Age'] = round(float(p['Age'])) if p['Age'] else avg_age
         p['Fare'] = float(p['Fare']) if p['Fare'] else avg_fare
