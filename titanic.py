@@ -2,9 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from collections import Counter
+from sys import stderr
 
 import pprint
 import csv
+import random
+
+import id3
 
 if __name__ == '__main__':
     with open('train.csv') as f:
@@ -18,7 +22,6 @@ if __name__ == '__main__':
     class_attr = 'Survived'
     attrs = set(train[0].keys())
     significant_attrs = attrs - set([class_attr]) - attrs_to_ignore
-    # pprint.pprint(train[:20])
 
     dataset = train + test
 
@@ -51,3 +54,20 @@ if __name__ == '__main__':
         p['SibSp'] = round(p['SibSp']/parch_interval) * parch_interval
 
 
+    tree = id3.ID3(train, significant_attrs, class_attr)
+    total = 0
+    correct = 0
+    print('PassengerId,Survived')
+    for row in test:
+        o = tree.query(row)
+        if class_attr in row:
+            e = row[class_attr]
+            print(e, o, e==o)
+            if e==o:
+               correct += 1
+            total += 1
+        else:
+            print(row['PassengerId'], o, sep=',')
+
+    if total:
+        print(correct/total, file=stderr)
