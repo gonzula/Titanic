@@ -60,18 +60,17 @@ class ID3:
                 )
 
         if abs(ID3._H_S(dataset, class_attr)) < float_info.epsilon:  # H_S == 0
-            try:
-                root['class'] = dataset[0][class_attr]
-            except IndexError as e:
-                root['class'] = 0
+            root['class'] = dataset[0][class_attr]
         elif abs(max(information_gain.values())) < float_info.epsilon:
             classes = set(row[class_attr] for row in dataset)
             occurrences = Counter(row[class_attr] for row in dataset)
             root['class'], _ = occurrences.most_common(1)[0]
         else:
             root['attr'] = selected_attr
-            root['possibilities'] = set(row[selected_attr] for row in self.dataset)
+            root['possibilities'] = set(row[selected_attr] for row in dataset)
             root['children'] = {}
+            occurrences = Counter(row[class_attr] for row in dataset)
+            root['guess_class'], _ = occurrences.most_common(1)[0]
 
             for p in root['possibilities']:
                 subset = [row for row in dataset if row[selected_attr] == p]
@@ -86,6 +85,8 @@ class ID3:
         if node.get('class', None) is not None:
             return node['class']
 
-        value = query[node['attr']]
-        print(node['attr'], query[node['attr']], file=stderr)
-        return self.query(query, node['children'][value])
+        try:
+            value = query[node['attr']]
+            return self.query(query, node['children'][value])
+        except:
+            return node['guess_class']
